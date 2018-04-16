@@ -1,23 +1,21 @@
 import React from 'react';
 import { mount, render } from 'enzyme';
 
-import Shades from './with-react';
+import shades, { ShadesProvider } from './with-react';
 import { states, mq } from './helpers';
-
-const { Provider } = Shades;
 
 describe('Shades DOM', () => {
   const mountShades = (inputStuff) => {
     const target = document.querySelector('head');
     return mount(
-      <Provider to={target} showDebug={false}>
+      <ShadesProvider to={target} showDebug={false}>
         {inputStuff}
-      </Provider>
+      </ShadesProvider>
     );
   };
 
   it('Renders without incident', () => {
-    const Title = Shades.h1({
+    const Title = shades.h1({
       backgroundColor: {
         dark: 'blue',
         light: 'green',
@@ -46,7 +44,7 @@ describe('Shades DOM', () => {
     expect(subject).toBeDefined();
   });
   it('Forwards valid DOM props', () => {
-    const Linky = Shades.a({
+    const Linky = shades.a({
       backgroundColor: {
         dark: 'blue',
         light: 'green',

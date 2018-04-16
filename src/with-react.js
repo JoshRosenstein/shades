@@ -40,7 +40,7 @@ const wrapReactName = curry(
  *   <shades.h1>Hello</shades.h1>
  * </Shades>
  */
-const Provider = compose(
+export const ShadesProvider = compose(
   setDisplayName('Shades.Provider'),
   setPropTypes({
     to: PropTypes.object.isRequired,
@@ -106,7 +106,4 @@ const domHelpers = htmlTagNames.reduce((result, tag) => ({
   [tag]: prettyComponentFactory(tag)
 }), { withComponent });
 
-export default {
-  ...domHelpers,
-  Provider
-};
+export default domHelpers;
