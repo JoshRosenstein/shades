@@ -10,7 +10,7 @@ describe('Shades DOM', () => {
   const mountShades = (inputStuff) => {
     const target = document.querySelector('head');
     return mount(
-      <Provider target={target} showDebug={false}>
+      <Provider to={target} showDebug={false}>
         {inputStuff}
       </Provider>
     );
