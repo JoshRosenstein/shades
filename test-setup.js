@@ -1,10 +1,11 @@
+import React from 'react';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { JSDOM } from 'jsdom';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+const jsdom = new JSDOM('<!doctype html><html><head></head><body></body></html>');
 const { window } = jsdom;
 
 function copyProps(src, target) {

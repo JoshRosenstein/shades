@@ -24,9 +24,10 @@
   "main": "./lib/index.js",
   "scripts": {
     "purge": "rm -rf ./lib ./helpers ./react",
-    "build": "webpack --config ./webpack.config.js",
-    "test": "cross-env NODE_ENV=test jest --colors",
-    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "build": "cross-env NODE_ENV=production webpack --config ./webpack.config.js",
+    "build:dev": "cross-env NODE_ENV=development webpack --config ./webpack.config.js",
+    "test": "cross-env NODE_ENV=test jest --colors --no-cache",
+    "test:watch": "cross-env NODE_ENV=test jest --colors --watch --no-cache",
     "postversion": "git push --tags"
   },
   "devDependencies": {
@@ -34,6 +35,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.40",
     "@babel/plugin-proposal-optional-chaining": "^7.0.0-beta.40",
     "@babel/plugin-transform-classes": "^7.0.0-beta.40",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.44",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.40",
     "@babel/preset-env": "^7.0.0-beta.40",
     "@babel/preset-react": "^7.0.0-beta.40",
@@ -45,6 +47,7 @@
     "babel-plugin-import-glob": "^2.0.0",
     "babel-plugin-pipe-composition": "^0.1.1",
     "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "create-react-context": "^0.2.2",
     "cross-env": "^5.1.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",

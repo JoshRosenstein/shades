@@ -9,8 +9,10 @@ const moduleRule = (target, loader) => ({
   }
 });
 
+console.log('Webpack using NODE_ENV value:', process.env.NODE_ENV);
+
 module.exports = {
-  mode: 'production',
+  mode: process.env.NODE_ENV,
   entry: {
     lib: './src/shades.js',
     react: './src/with-react.js',

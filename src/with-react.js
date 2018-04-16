@@ -15,7 +15,8 @@ import {
   pure,
   setDisplayName,
   wrapDisplayName,
-  setPropTypes
+  setPropTypes,
+  mapProps
 } from 'recompose';
 
 import css, { generateClassName } from './style-parser';
@@ -40,32 +41,40 @@ const wrapReactName = curry(
  *   <shades.h1>Hello</shades.h1>
  * </Shades>
  */
-export const Shades = compose(
-  setDisplayName('Shades'),
+const Provider = compose(
+  setDisplayName('Shades.Provider'),
   setPropTypes({
-    to: PropTypes.object.isRequired,
+    target: PropTypes.object.isRequired,
     showDebug: PropTypes.bool
   }),
   withContext(
-    { targetDom: PropTypes.object, showDebug: PropTypes.bool },
-    props => ({ targetDom: props.to, showDebug: props.showDebug })
+    { value: PropTypes.object },
+    ({ target, showDebug = false }) => ({ value: { target, showDebug } })
   )
 )(props => props.children);
 
-const applyShadeContext = getContext({
-  targetDom: PropTypes.object,
-  showDebug: PropTypes.bool
-})
+const withShadesContext = compose(
+  setDisplayName('Shades.Consumer'),
+  getContext({
+    value: PropTypes.object
+  }),
+  mapProps(({ value, ...props }) => ({ ...props, ...value }))
+)
+
+// const Provider = React.createContext({
+//   target: document.querySelector('head'),
+//   showDebug: false
+// });
 
 const prettyComponentFactory = curry(
   (tagName, styleRules) => {
     const baseClassName = generateClassName();
     const prettyDisplayName = `shades.${tagName}`;
     const prettyElement = setDisplayName(prettyDisplayName) << (
-      ({ targetDom, showDebug, children, className, ...props }) => {
+      ({ children, className, target, showDebug, ...props }) => {
         const logger = getLoggers({ showDebug, displayName: prettyDisplayName });
 
-        if (!targetDom) {
+        if (!target) {
           const badConfigMsg = 'Looks like either the Shades context provider is missing, or is incorrectly configured.';
           logger.error(badConfigMsg);
           throw new Error(
@@ -76,7 +85,7 @@ const prettyComponentFactory = curry(
         const fullClassName = css(
           {
             className: baseClassName,
-            target: targetDom,
+            target,
             props,
             showDebug,
             displayName: prettyDisplayName
@@ -91,9 +100,9 @@ const prettyComponentFactory = curry(
           ...propsToForward
         }, children);
       }
-    )
+    );
 
-    return prettyElement >> applyShadeContext >> pure;
+    return prettyElement >> withShadesContext >> pure;
   }
 )
 
@@ -104,6 +113,6 @@ const withComponent = curry(
 const domHelpers = htmlTagNames.reduce((result, tag) => ({
   ...result,
   [tag]: prettyComponentFactory(tag)
-}), { withComponent });
+}), { withComponent, Provider });
 
 export default domHelpers;

@@ -80,6 +80,7 @@ export const getSubstring       = (start, end) => (original)   => original.subst
 export const getSubstringUntil  = (end)        => getSubstring(0, end);
 export const getSubstringAfter  = (start)      => getSubstring(start);
 export const startsWithAny      = (...searchStrs) => searchStrs >> map(startsWith) >> anyPass
+export const combineStrings     = (...inputs) => inputs.filter(Boolean).join('');
 
 export const joinString = (first, ...items) => {
   if (first >> isArray) return first >> join('');
@@ -204,10 +205,10 @@ export const betterSet = (initialData = []) => {
   const outerMethods = {
     add:     (...items) => items.forEach(item => internal.add(item)) || outerMethods,
     remove:  (...items) => items.forEach(item => internal.delete(item)) || outerMethods,
-    forEach: (...args) => internal.forEach(...args) || outerMethods,
-    clear:   () => internal.clear() && outerMethods,
-    has:     (...args) => internal.has(...args),
-    map:     (mapFn) => [...internal].map(mapFn) |> betterSet,
+    forEach: (...args)  => internal.forEach(...args) || outerMethods,
+    clear:   ()         => internal.clear() && outerMethods,
+    has:     (...args)  => internal.has(...args),
+    map:     (mapFn)    => [...internal].map(mapFn) |> betterSet,
     filter:  (filterFn) => [...internal].filter(filterFn) |> betterSet,
     reduce:  (reduceFn, initialValue) => [...internal].reduce(reduceFn, initialValue),
     get size() {
@@ -268,8 +269,8 @@ const logBlue    = (...values) => tiza.bold().color('cornflowerblue') .text(valu
 const logPurple  = (...values) => tiza.bold().color('mediumorchid')   .text(values.join(' ')).reset()
 const logOrange  = (...values) => tiza.bold().color('darkorange')     .text(values.join(' ')).reset();
 
-const logError   = () => tiza.bold().underline().color('darkorange')  .text('Error: ')  .reset();
-const logWarning = () => tiza.bold().underline().color('mediumorchid').text('Warning: ').reset();
+const logError   = () => tiza.bold().color('darkorange')  .text('Error: ')  .reset();
+const logWarning = () => tiza.bold().color('mediumorchid').text('Warning: ').reset();
 const logInfo    = () => tiza.bold().text('Info: ').reset();
 
 const shadesLog = (displayName = 'Shades') => {
