@@ -44,7 +44,8 @@ import {
   merge,
   mergeWith,
   equals,
-  intersection,
+  contains,
+  filter,
   prop,
   __
 } from 'ramda';
@@ -225,8 +226,7 @@ export const parseAllStyles = parseStyleMetaData({
       ...matchers
     } = value;
 
-    const intersectedMatchers = intersection(keys(matchers),keys(props))
-
+    const intersectedMatchers = filter(contains(__,keys(props)), keys(matchers)) ///Maintains Order of matcher Keys
     const computedStyle = intersectedMatchers |> iterateUntilResult(
       (propName) => propName |> prop(__, matchers) |>  whenFunctionCallWith(props[propName],props)
     ) |> fallbackTo(defaultValue);

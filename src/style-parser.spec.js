@@ -288,6 +288,34 @@ describe('parseRules', () => {
           expect(result[topSelector]).toContain('color: navy;')
         })
 
+        it('Result should not depend on prop order', () => {
+              const topSelector = '#meow'
+              const props1= {mode: 'dark' ,nextOne: 'hello'}
+              const props2={ nextOne: 'hello',mode: 'dark' }
+              const rules1={
+                color: {
+                  mode: value => value === 'dark' && 'navy',
+                  nextOne: 'purple',
+                  default: 'green'
+                }
+              }
+              const rules2={
+                color: {
+                  nextOne: 'purple',
+                  mode: value => value === 'dark' && 'navy',
+                  default: 'green'
+                }
+              }
+
+            const result1 = parseRulesNoDebug(topSelector,props1,rules1)
+            const result2 = parseRulesNoDebug(topSelector,props2,rules1)
+            const result3 = parseRulesNoDebug(topSelector,props1,rules2)
+            const result4 = parseRulesNoDebug(topSelector,props2,rules2)
+              expect(result1).toEqual(result2)
+              expect(result3).toEqual(result4)
+              expect(result1).not.toEqual(result3)
+            })
+
     it('skips the rule entirely if there is no match and no default value', () => {
       const topSelector = '#meow';
 
