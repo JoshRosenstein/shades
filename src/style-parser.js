@@ -238,7 +238,7 @@ export const parseAllStyles = parseStyleMetaData({
       if (props |> has(targetProp)) {
         return (
           outputValue
-          |> whenFunctionCallWith(props[targetProp])
+          |> whenFunctionCallWith(props[targetProp],props)
           |> parseNested(parentSelector)
         );
       }

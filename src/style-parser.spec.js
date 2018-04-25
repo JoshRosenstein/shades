@@ -332,6 +332,33 @@ describe('parseRules', () => {
       ]));
     });
 
+    it('supports a block pattern rule as a function that takes the value of the named prop and optional props', () => {
+  const topSelector = '#meow';
+  const get = (obj, path, fallback) =>
+    path.split('.').reduce((a, b) => (a && a[b] ? a[b] : null), obj) ||
+    fallback
+  const getColorFromTheme = (v, p) => get(p, `theme.colors.${v}`, v)
+
+  const result = parseRulesNoDebug(topSelector, { mode: 'hi there', nextOne: 'dodgerblue',  theme: { colors: { dodgerblue: 'dodgerblueFromTheme' } } },
+  {
+    __match: {
+      mode: {
+        fontWeight: 'bold',
+        color: 'purple'
+      },
+      nextOne: (value,props) => ({
+        color: getColorFromTheme(value,props),
+        border: '1px solid #ccc'
+      })
+    }
+  }
+);
+expect(result[topSelector]).toEqual(expect.arrayContaining([
+  expect.stringContaining('font-weight: bold'),
+  expect.stringContaining('color: dodgerblueFromTheme')
+]));
+});
+
     it('renders "before" and "after" keys as pseudo-elements', () => {
       const topSelector = '#philip-is-awesome';
       const topSelectorBefore = `${topSelector}::before`;
