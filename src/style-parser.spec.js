@@ -179,6 +179,28 @@ describe('parseRules', () => {
       expect(result[topSelector]).toContain('color: navy;');
     })
 
+    it('supports a pattern match rule as a function that takes the value of the named prop and optional props', () => {
+  const topSelector = '#meow';
+  const get = (obj, path, fallback) =>
+    path.split('.').reduce((a, b) => (a && a[b] ? a[b] : null), obj) ||
+    fallback
+  const getColorFromTheme = (v, p) => get(p, `theme.colors.${v}`, v)
+
+  const result = parseRulesNoDebug(topSelector, { flavor: 'blue',mode: 'dark',  theme: { colors: { blue: 'thisIsBLue' } } }, {
+    fontSize: '10px',
+    color: {
+       flavor: (v, p) => getColorFromTheme(v, p),
+      mode: (value) => value === 'dark' && 'navy',
+      default: 'green'
+    },
+    fontWeight: 'normal'
+  });
+
+
+  expect(result).toHaveProperty([topSelector]);
+  expect(result[topSelector]).toContain('color: thisIsBLue;');
+})
+
     it('tries the next valid match when the current matcher returns null, undefined, or false', () => {
       const topSelector = '#meow';
 

@@ -228,7 +228,7 @@ export const parseAllStyles = parseStyleMetaData({
     const intersectedMatchers = intersection(keys(matchers),keys(props))
 
     const computedStyle = intersectedMatchers |> iterateUntilResult(
-      (propName) => propName |> prop(__, matchers) |>  whenFunctionCallWith(props[propName])
+      (propName) => propName |> prop(__, matchers) |>  whenFunctionCallWith(props[propName],props)
     ) |> fallbackTo(defaultValue);
 
     return computedStyle && addStyle(key, computedStyle);
