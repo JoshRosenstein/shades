@@ -43,7 +43,10 @@ import {
   has,
   merge,
   mergeWith,
-  equals
+  equals,
+  intersection,
+  prop,
+  __
 } from 'ramda';
 
 const asPseudoSelector = (key) => `:${dasherize(key)}`;
@@ -222,11 +225,10 @@ export const parseAllStyles = parseStyleMetaData({
       ...matchers
     } = value;
 
-    const pickFromMatchers    = matchers |> flip(pick);
-    const intersectedMatchers = props |> keys |> pickFromMatchers;
+    const intersectedMatchers = intersection(keys(matchers),keys(props))
 
     const computedStyle = intersectedMatchers |> iterateUntilResult(
-      (key, value) => value |> whenFunctionCallWith(props[key])
+      (propName) => propName |> prop(__, matchers) |>  whenFunctionCallWith(props[propName])
     ) |> fallbackTo(defaultValue);
 
     return computedStyle && addStyle(key, computedStyle);

@@ -237,6 +237,35 @@ describe('parseRules', () => {
       expect(result[topSelector]).toContain('color: navy;');
     })
 
+    it('uses only the first match found, based on the order of styles', () => {
+          const topSelector = '#meow'
+
+          const result = parseRulesNoDebug(
+            topSelector,
+            { nextOne: 'hello',mode: 'dark' },
+            {
+              fontSize: '10px',
+              color: {
+                mode: value => value === 'dark' && 'navy',
+                nextOne: 'purple',
+                default: 'green'
+              },
+              fontWeight: {
+                mode: 'bold'
+              },
+              __match: {
+                mode: {
+                  color: 'blue',
+                  fontWeight: 'bold'
+                }
+              }
+            }
+          )
+
+          expect(result).toHaveProperty(topSelector)
+          expect(result[topSelector]).toContain('color: navy;')
+        })
+
     it('skips the rule entirely if there is no match and no default value', () => {
       const topSelector = '#meow';
 
