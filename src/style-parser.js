@@ -43,7 +43,11 @@ import {
   has,
   merge,
   mergeWith,
-  equals
+  equals,
+  contains,
+  filter,
+  prop,
+  __
 } from 'ramda';
 
 const asPseudoSelector = (key) => `:${dasherize(key)}`;
@@ -222,15 +226,14 @@ export const parseAllStyles = parseStyleMetaData({
       ...matchers
     } = value;
 
-    const pickFromMatchers    = matchers |> flip(pick);
-    const intersectedMatchers = props |> keys |> pickFromMatchers;
+const intersectedMatchers = filter(contains(__,keys(props)), keys(matchers)) ///Maintains Order of matcher Keys
 
-    const computedStyle = intersectedMatchers |> iterateUntilResult(
-      (key, value) => value |> whenFunctionCallWith(props[key])
-    ) |> fallbackTo(defaultValue);
+const computedStyle = intersectedMatchers |> iterateUntilResult(
+    (propName) => propName |> prop(__, matchers) |>  whenFunctionCallWith(props[propName])
+  ) |> fallbackTo(defaultValue);
 
-    return computedStyle && addStyle(key, computedStyle);
-  },
+  return computedStyle && addStyle(key, computedStyle);
+},
   blockPattern: ({ addRuleBlock, props, parseNested, parentSelector }) => (key, propsToMatch) => {
     const matchedRules = propsToMatch |> mapMerge((targetProp, outputValue) => {
       if (props |> has(targetProp)) {
